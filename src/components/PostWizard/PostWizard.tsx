@@ -5,9 +5,10 @@ export default function PostWizard() {
   const { user } = useUser();
 
   if (!user) return null;
+
   return (
-    <div className="flex space-x-3 border-b py-5">
-      <div className="relative h-14 w-14 overflow-hidden rounded-full">
+    <div className="flex space-x-3 py-5 border-b border-slate-300 mb-5">
+      <div className="relative h-12 w-12 overflow-hidden rounded-full">
         <Image
           src={user.imageUrl}
           alt="Profile Image"

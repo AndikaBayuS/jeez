@@ -16,8 +16,8 @@ export default function Home() {
       <div className="flex h-screen justify-center">
         <div className="w-full max-w-2xl border-x border-slate-300 px-5">
           <PostWizard />
-          {data?.map((post) => (
-            <Card key={post.id} title={post.title} content={post.content} />
+          {data?.map((fullPost) => (
+            <Card key={fullPost.post.id} {...fullPost} />
           ))}
         </div>
       </div>
