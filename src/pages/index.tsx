@@ -1,10 +1,12 @@
 import Head from "next/head";
 import Card from "~/components/Card";
+import LoadingSpinner from "~/components/LoadingSpinner";
 import PostWizard from "~/components/PostWizard";
 import { api } from "~/utils/api";
 
 export default function Home() {
-  const { data } = api.posts.getAll.useQuery();
+  const { data, isLoading } = api.posts.getAll.useQuery();
+  if(isLoading) return <LoadingSpinner />
 
   return (
     <>
