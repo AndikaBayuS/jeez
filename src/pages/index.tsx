@@ -1,12 +1,14 @@
+import { useUser } from "@clerk/nextjs";
 import Head from "next/head";
-import Card from "~/components/Card";
-import LoadingSpinner from "~/components/LoadingSpinner";
+import Feed from "~/components/Feed";
 import PostWizard from "~/components/PostWizard";
 import { api } from "~/utils/api";
 
 export default function Home() {
-  const { data, isLoading } = api.posts.getAll.useQuery();
-  if(isLoading) return <LoadingSpinner />
+  const { isLoaded, isSignedIn } = useUser();
+
+  api.posts.getAll.useQuery();
+  if(!isLoaded) return <div />
 
   return (
     <>
@@ -17,10 +19,8 @@ export default function Home() {
       </Head>
       <div className="flex h-screen justify-center">
         <div className="w-full max-w-2xl border-x border-slate-300 px-5">
-          <PostWizard />
-          {data?.map((fullPost) => (
-            <Card key={fullPost.post.id} {...fullPost} />
-          ))}
+          {isSignedIn && <PostWizard />}
+          <Feed />
         </div>
       </div>
     </>

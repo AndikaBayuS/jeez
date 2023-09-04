@@ -1,6 +1,6 @@
 export default function LoadingSpinner() {
   return (
-    <div className="flex h-[calc(100dvh-5rem)] w-full items-center justify-center">
+    <div className="flex h-full w-full items-center justify-center">
       <svg
         aria-hidden="true"
         className="mr-2 h-8 w-8 animate-spin fill-slate-300 text-slate-200 dark:text-gray-600"
