@@ -1,5 +1,9 @@
+import dayjs from "dayjs";
 import Image from "next/image";
 import type { RouterOutputs } from "~/utils/api";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 type CardProps = RouterOutputs["posts"]["getAll"][number];
 
@@ -16,7 +20,12 @@ export default function Card(props: CardProps) {
             layout="fill"
           />
         </div>
-        <p className="text-xs text-slate-600">@{author.username}</p>
+        <div className="flex items-center space-x-1">
+          <span className="text-xs text-slate-600">@{author.username}</span>
+          <span className="text-xs text-slate-600">{`• ${dayjs(
+            post.createdAt
+          ).fromNow()}`}</span>
+        </div>
       </div>
       <p className="mt-2 text-2xl font-semibold text-black">{post.title}</p>
       <p className="mt-2 text-base text-slate-600">{post.content}</p>
