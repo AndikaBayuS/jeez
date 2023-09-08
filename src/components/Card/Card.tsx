@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import Image from "next/image";
 import type { RouterOutputs } from "~/utils/api";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { ArrowFatUp, ArrowFatDown } from "@phosphor-icons/react";
 
 dayjs.extend(relativeTime);
 
@@ -29,6 +30,16 @@ export default function Card(props: CardProps) {
       </div>
       <p className="mt-2 text-2xl font-semibold text-black">{post.title}</p>
       <p className="mt-2 text-base text-slate-600">{post.content}</p>
+      <div className="flex items-center space-x-2 mt-2">
+        <div className="flex items-center space-x-1">
+          <ArrowFatUp size={18} weight="bold" />
+          <p className="text-base">10</p>
+        </div>
+        <div className="flex items-center space-x-1">
+          <ArrowFatDown size={18} weight="bold" />
+          <p className="text-base">1</p>
+        </div>
+      </div>
     </div>
   );
 }

@@ -9,7 +9,7 @@ export default function Feed() {
   if (!data) return <div>Something went wrong!</div>;
 
   return (
-    <div>
+    <div className="flex flex-col gap-3 overflow-auto p-5">
       {data.map((fullPost) => (
         <Card key={fullPost.post.id} {...fullPost} />
       ))}
