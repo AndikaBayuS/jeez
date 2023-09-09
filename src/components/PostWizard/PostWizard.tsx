@@ -2,6 +2,8 @@ import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useState } from "react";
 import { api } from "~/utils/api";
+import toast from "react-hot-toast";
+import LoadingSpinner from "../LoadingSpinner";
 
 export default function PostWizard() {
   const { user } = useUser();
@@ -14,6 +16,9 @@ export default function PostWizard() {
     onSuccess: () => {
       setInput({ title: "", content: "" });
       void ctx.posts.getAll.invalidate();
+    },
+    onError: () => {
+      toast.error("Too many request!");
     },
   });
 
@@ -44,13 +49,15 @@ export default function PostWizard() {
           value={input.content}
           onChange={(e) => setInput({ ...input, content: e.target.value })}
         />
-        <button
-          className="rounded-md bg-slate-900 px-4 py-1.5 font-semibold text-slate-100"
-          disabled={isLoading}
-          onClick={() => mutate(input)}
-        >
-          Post
-        </button>
+        {input.title !== "" && input.content !== "" && (
+          <button
+            className="rounded-md bg-slate-900 px-4 py-1.5 font-semibold text-slate-100 disabled:opacity-50"
+            disabled={isLoading}
+            onClick={() => mutate(input)}
+          >
+            Post
+          </button>
+        )}
       </div>
     </div>
   );

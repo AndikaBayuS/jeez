@@ -3,6 +3,7 @@ import Image from "next/image";
 import { api, type RouterOutputs } from "~/utils/api";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { ArrowFatUp, ArrowFatDown } from "@phosphor-icons/react";
+import toast from "react-hot-toast";
 
 dayjs.extend(relativeTime);
 
@@ -15,11 +16,17 @@ export default function Card(props: CardProps) {
     onSuccess: () => {
       void ctx.posts.getAll.invalidate();
     },
+    onError: () => {
+      toast.error("Too many request!");
+    }
   });
   const { mutate: mutateDownvote } = api.posts.downvote.useMutation({
     onSuccess: () => {
       void ctx.posts.getAll.invalidate();
     },
+    onError: () => {
+      toast.error("Too many request!");
+    }
   });
 
   return (
