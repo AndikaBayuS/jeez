@@ -1,6 +1,8 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import type { User } from "@clerk/nextjs/server";
 import { TRPCError } from "@trpc/server";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 import { z } from "zod";
 import {
   createTRPCRouter,
@@ -15,6 +17,19 @@ const filterUserForClient = (user: User) => {
     imageUrl: user.imageUrl,
   };
 };
+
+const postLimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(3, "1 m"),
+  analytics: true,
+  prefix: "@upstash/ratelimit",
+});
+const voteLimit = new Ratelimit({
+  redis: Redis.fromEnv(),
+  limiter: Ratelimit.slidingWindow(10, "1 m"),
+  analytics: true,
+  prefix: "@upstash/ratelimit",
+});
 
 export const postsRouter = createTRPCRouter({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -54,6 +69,9 @@ export const postsRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       const authorId = ctx.userId;
+      const { success } = await postLimit.limit(authorId);
+
+      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
 
       const post = await ctx.prisma.post.create({
         data: {
@@ -69,6 +87,11 @@ export const postsRouter = createTRPCRouter({
   upvote: privateProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+      const { success } = await voteLimit.limit(authorId);
+
+      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
       const post = await ctx.prisma.post.update({
         where: {
           id: input,
@@ -84,6 +107,11 @@ export const postsRouter = createTRPCRouter({
   downvote: privateProcedure
     .input(z.string())
     .mutation(async ({ ctx, input }) => {
+      const authorId = ctx.userId;
+      const { success } = await voteLimit.limit(authorId);
+
+      if (!success) throw new TRPCError({ code: "TOO_MANY_REQUESTS" });
+
       const post = await ctx.prisma.post.update({
         where: {
           id: input,
