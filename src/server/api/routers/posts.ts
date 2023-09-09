@@ -65,4 +65,34 @@ export const postsRouter = createTRPCRouter({
 
       return post;
     }),
+
+  upvote: privateProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.update({
+        where: {
+          id: input,
+        },
+        data: {
+          upvote: { increment: 1 },
+        },
+      });
+
+      return post;
+    }),
+
+  downvote: privateProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      const post = await ctx.prisma.post.update({
+        where: {
+          id: input,
+        },
+        data: {
+          downvote: { increment: 1 },
+        },
+      });
+
+      return post;
+    }),
 });

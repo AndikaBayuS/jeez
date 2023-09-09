@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import Image from "next/image";
-import type { RouterOutputs } from "~/utils/api";
+import { api, type RouterOutputs } from "~/utils/api";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { ArrowFatUp, ArrowFatDown } from "@phosphor-icons/react";
 
@@ -10,6 +10,18 @@ type CardProps = RouterOutputs["posts"]["getAll"][number];
 
 export default function Card(props: CardProps) {
   const { post, author } = props;
+  const ctx = api.useContext();
+  const { mutate: mutateUpvote } = api.posts.upvote.useMutation({
+    onSuccess: () => {
+      void ctx.posts.getAll.invalidate();
+    },
+  });
+  const { mutate: mutateDownvote } = api.posts.downvote.useMutation({
+    onSuccess: () => {
+      void ctx.posts.getAll.invalidate();
+    },
+  });
+
   return (
     <div className="rounded-lg border border-gray-400 p-5">
       <div className="flex items-center space-x-1">
@@ -30,14 +42,20 @@ export default function Card(props: CardProps) {
       </div>
       <p className="mt-2 text-2xl font-semibold text-black">{post.title}</p>
       <p className="mt-2 text-base text-slate-600">{post.content}</p>
-      <div className="flex items-center space-x-2 mt-2">
-        <div className="flex items-center space-x-1">
+      <div className="mt-2 flex items-center space-x-2">
+        <div
+          onClick={() => mutateUpvote(post.id)}
+          className="flex items-center space-x-1 cursor-pointer"
+        >
           <ArrowFatUp size={18} weight="bold" />
-          <p className="text-base">10</p>
+          <p className="text-base">{post.upvote}</p>
         </div>
-        <div className="flex items-center space-x-1">
+        <div
+          onClick={() => mutateDownvote(post.id)}
+          className="flex items-center space-x-1 cursor-pointer"
+        >
           <ArrowFatDown size={18} weight="bold" />
-          <p className="text-base">1</p>
+          <p className="text-base">{post.downvote}</p>
         </div>
       </div>
     </div>
