@@ -20,7 +20,7 @@ export default function PostWizard() {
   if (!user) return null;
 
   return (
-    <div className="flex space-x-3 border-b border-slate-300 py-5">
+    <div className="flex space-x-3 border-b border-slate-300 p-5">
       <div className="relative h-9 w-9 overflow-hidden rounded-full">
         <Image
           src={user.imageUrl}
