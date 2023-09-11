@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/nextjs";
+import { SignInButton, useUser } from "@clerk/nextjs";
 import Head from "next/head";
 import Feed from "~/components/Feed";
 import PostWizard from "~/components/PostWizard";
@@ -20,6 +20,13 @@ export default function Home() {
       <div className="flex h-screen justify-center overflow-hidden">
         <div className="flex h-full w-full max-w-2xl flex-col border-x border-slate-300">
           {isSignedIn && <PostWizard />}
+          {!isSignedIn && (
+            <SignInButton>
+              <button className="rounded-md bg-slate-900 px-4 py-1.5 w-max ml-5 mt-5 font-semibold text-slate-100">
+                Sign in
+              </button>
+            </SignInButton>
+          )}
           <Feed />
         </div>
       </div>
